@@ -1,0 +1,107 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# fastlane/Fastfile
+default_platform :ios
+
+platform :ios do
+  desc "运行测试"
+  lane :test do
+    run_tests(
+      workspace: "YourApp.xcworkspace",
+      scheme: "YourApp",
+      devices: ["iPhone 15"],
+      clean: true
+    )
+  end
+
+  desc "构建开发版本"
+  lane :development do
+    # 增加构建号
+    increment_build_number(
+      build_number: latest_testflight_build_number + 1
+    )
+    
+    # 构建应用
+    gym(
+      scheme: "YourApp",
+      workspace: "YourApp.xcworkspace",
+      clean: true,
+      export_method: "development",
+      output_directory: "./builds",
+      output_name: "YourApp-Development.ipa"
+    )
+  end
+
+  desc "构建 Ad-hoc 测试版本"
+  lane :adhoc do
+    # 同步证书和描述文件（可选）
+    match(
+      type: "adhoc",
+      readonly: true
+    )
+    
+    gym(
+      scheme: "YourApp",
+      workspace: "YourApp.xcworkspace",
+      export_method: "ad-hoc",
+      output_directory: "./builds",
+      output_name: "YourApp-AdHoc.ipa"
+    )
+    
+    # 上传到分发平台（如 Fir.im）
+    firim(firim_api_token: ENV["FIRIM_API_TOKEN"])
+  end
+
+  desc "提交到 TestFlight"
+  lane :beta do
+    # 同步证书
+    match(
+      type: "appstore",
+      readonly: true
+    )
+    
+    # 构建应用
+    gym(
+      scheme: "YourApp",
+      workspace: "YourApp.xcworkspace",
+      export_method: "app-store",
+      output_directory: "./builds"
+    )
+    
+    # 上传到 TestFlight
+    pilot(
+      username: ENV["APPLE_ID"],
+      app_identifier: "com.yourcompany.yourapp",
+      ipa: "./builds/YourApp.ipa",
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "执行代码质量检查"
+  lane :quality_check do
+    # SwiftLint 检查
+    swiftlint(
+      mode: :lint,
+      strict: true
+    )
+    
+    # 运行测试
+    run_tests(
+      scheme: "YourApp",
+      devices: ["iPhone 15"]
+    )
+  end
+end
