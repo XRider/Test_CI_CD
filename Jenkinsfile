@@ -24,7 +24,7 @@ pipeline {
                       -scheme Test_CI_CD \
                       -configuration Release \
                       -archivePath build/Test_CI_CD.xcarchive \
-                      -destination 'platform=MacOS,name=xzc的MacBook Pro'
+                      -destination 'platform=MacOS,name=Any Mac'
                     xcodebuild -exportArchive \
                       -archivePath build/Test_CI_CD.xcarchive \
                       -exportOptionsPlist exportOptions.plist \
