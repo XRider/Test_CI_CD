@@ -18,9 +18,9 @@ pipeline {
             steps {
                 echo "🏗️ 使用 xcodebuild 构建 IPA"
                 sh '''
-                    xcodebuild clean -workspace YourApp.xcworkspace -scheme YourApp -configuration Release
+                    xcodebuild clean -workspace Test_CI_CD.xcodeproj -scheme YourApp -configuration Release
                     xcodebuild archive \
-                      -workspace YourApp.xcworkspace \
+                      -workspace Test_CI_CD.xcodeproj \
                       -scheme YourApp \
                       -configuration Release \
                       -archivePath build/YourApp.xcarchive \
