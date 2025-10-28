@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "🔁 拉取代码"
-                git branch: 'main', url: 'https://github.com/yourname/YourApp.git'
+                git branch: 'main', url: 'https://github.com/XRider/Test_CI_CD.git'
             }
         }
 
