@@ -18,15 +18,15 @@ pipeline {
             steps {
                 echo "🏗️ 使用 xcodebuild 构建 IPA"
                 sh '''
-                    xcodebuild clean -workspace Test_CI_CD.xcodeproj -scheme YourApp -configuration Release
+                    xcodebuild clean -project Test_CI_CD.xcodeproj -scheme Test_CI_CD -configuration Release
                     xcodebuild archive \
-                      -workspace Test_CI_CD.xcodeproj \
-                      -scheme YourApp \
+                      -project Test_CI_CD.xcodeproj \
+                      -scheme Test_CI_CD \
                       -configuration Release \
-                      -archivePath build/YourApp.xcarchive \
+                      -archivePath build/Test_CI_CD.xcarchive \
                       -destination 'generic/platform=iOS'
                     xcodebuild -exportArchive \
-                      -archivePath build/YourApp.xcarchive \
+                      -archivePath build/Test_CI_CD.xcarchive \
                       -exportOptionsPlist exportOptions.plist \
                       -exportPath build/
                 '''
